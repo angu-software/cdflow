@@ -1,0 +1,94 @@
+# frozen_string_literal: true
+
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+opt_out_usage
+
+require 'fileutils'
+require_relative 'lib/cd_steps'
+
+# -- Configuration --
+
+scheme = 'Taja'
+
+dev_stage_test_destination = 'platform=iOS Simulator,name=iPad Air 11-inch (M2),OS=18.2'
+
+ENV['FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT'] = '60'
+
+# -- Fastlane Specs --
+
+opt_out_usage
+default_platform(:ios)
+
+platform :ios do
+  before_all do
+    set_xcode_version
+  end
+
+  lane :app_store_screenshots do
+    capture_store_screenshots(devices: ['iPhone 16 Pro Max'],
+                              languages: %w[en-US de-DE],
+                              scheme: 'AppStoreScreenshots',
+                              test_plan: 'AppStoreScreenshots',
+                              output_directory: './Release Artifacts/screenshots',
+                              clear_previous_screenshots: true)
+  end
+
+  # -- DEV Stage --
+
+  lane :dev_stage do
+    dev_build
+    dev_test
+  end
+
+  lane :dev_build do
+    build_for_testing(stage: CD_STAGES[:DEV],
+                      scheme: scheme)
+  end
+
+  lane :dev_test do
+    test_without_building(stage: CD_STAGES[:DEV],
+                          scheme: scheme,
+                          test_plan: 'DevelopmentTests',
+                          destination: dev_stage_test_destination)
+  end
+
+  lane :dev_clean do
+    clean_build_artifacts(stage: CD_STAGES[:DEV])
+  end
+
+  # -- ACC Stage --
+
+  lane :acc_stage do
+    acc_build
+    acc_test
+  end
+
+  lane :acc_build do
+    build_for_testing(stage: CD_STAGES[:ACC],
+                      scheme: scheme)
+  end
+
+  lane :acc_test do
+    test_without_building(stage: CD_STAGES[:ACC],
+                          scheme: scheme,
+                          test_plan: 'UIAcceptanceTests',
+                          destination: dev_stage_test_destination)
+  end
+
+  lane :acc_clean do
+    clean_build_artifacts(stage: CD_STAGES[:ACC])
+  end
+end
