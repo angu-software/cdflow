@@ -2,7 +2,7 @@
 
 require_relative "cdflow/version"
 
-module Cdflow
+module CDFlow
   class Error < StandardError; end
   # Your code goes here...
 end

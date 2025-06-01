@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe Cdflow do
+RSpec.describe CDFlow do
   it "has a version number" do
-    expect(Cdflow::VERSION).not_to be nil
+    expect(CDFlow::VERSION).not_to be nil
   end
 
   it "does something useful" do

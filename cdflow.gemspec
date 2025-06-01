@@ -3,10 +3,10 @@
 require_relative "lib/cdflow/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "cdflow"
-  spec.version = Cdflow::VERSION
+  spec.name = "CDFlow"
+  spec.version = CDFlow::VERSION
   spec.authors = ["Andreas Günther"]
-  spec.email = ["mailaguenther@proton.me"]
+  spec.email = []
 
   spec.summary = "TODO: Write a short summary, because RubyGems requires one."
   spec.description = "TODO: Write a longer description or delete this line."
